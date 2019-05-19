@@ -1,3 +1,8 @@
+Jazzkel library
+(c) Donya Quick 2019
+
+Not for commercial use.
+
 Setup instructions:
 
 1. Install Haskell Platform and Euterpea using the instructions on 
