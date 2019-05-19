@@ -1,3 +1,10 @@
+Simple walking bass implementation
+Donya Quick
+
+Load this file in GHCi and run "play m" to hear some music.
+Use Ctrl+C to stop (the music is infinite). You may need to 
+press it a few times to stop.
+
 > module SimpleWalkingBass where
 > import JazzTypes
 > import Utils
@@ -6,6 +13,10 @@
 
 > data WalkingState = NextRoot AbsPitch | NullState
 >     deriving (Eq, Show)
+
+Taking a single step in the walking bass. Given a pitch space, the 
+current pitch, and the destination pitch, we take a step between them
+if possible. If they are too close together, we take a step nearby.
 
 > makeStep :: [AbsPitch] -> AbsPitch -> AbsPitch -> StdGen -> (StdGen, AbsPitch)
 > makeStep pitchSpace p1 p2 g = 
@@ -16,14 +27,25 @@
 >         ps = if null midPs then nearPs else midPs
 >     in  choose g ps
 
-> nSteps :: Int -> [AbsPitch] -> AbsPitch -> AbsPitch -> StdGen -> (StdGen, [AbsPitch])
-> nSteps 0 pSpace p1 p2 g = (g, [])
-> nSteps i pSpace p1 p2 g = 
+The walk function iteratively applies makeStep to produce a walking bass
+line spanning some number of beats. It takes the number of beats (i), 
+a pitch space for the bass, and starting and ending pitches.
+
+> walk :: Int -> [AbsPitch] -> AbsPitch -> AbsPitch -> StdGen -> (StdGen, [AbsPitch])
+> walk 0 pSpace p1 p2 g = (g, [])
+> walk i pSpace p1 p2 g = 
 >     let (g2, pMid) = makeStep pSpace p1 p2 g
->         (g3, ps) = nSteps (i-1) pSpace pMid p2 g2
+>         (g3, ps) = walk (i-1) pSpace pMid p2 g2
 >     in  (g3, p1 : ps)
 
+A pitch space for our bass:
+
 > bassRange = [36..50] :: [AbsPitch]
+
+The PartFun for the walking bass uses the walk function to fill the 
+number of beats in the current segment (seg1). It also must choose the 
+target root pitch for the next segment (seg2), which is ketp a part 
+of the bass's state.
 
 > wBassFun :: PartFun AbsPitch WalkingState
 > wBassFun NullState seg1 seg2 hist g = 
@@ -43,9 +65,12 @@
 >         roots2 = filter (\p -> mod p 12 == scale2 !! 0) pSpace2
 >         (g1, nextR) = choose g roots2
 >         beats = round (4*segDur seg1)
->         (g2, pitches) = nSteps beats pSpace1 r nextR g1
+>         (g2, pitches) = walk beats pSpace1 r nextR g1
 >         bassLine = line $ map (note qn) pitches 
 >     in  (g2, NextRoot nextR, cut (segDur seg1/4) bassLine)
+
+A very simple chord function that we can use along with our 
+bassline (just so we can hear some chords):
 
 > chordFun :: PartFun AbsPitch s
 > chordFun s seg1 seg2 hist g = 
@@ -54,7 +79,9 @@
 >         m = chord $ map (note d . (+60)) ps
 >     in  (g, s, m)
 
+Now we put the two together as a jazz band.
 
+> myJB :: JazzBand AbsPitch WalkingState
 > myJB = [JazzPart Bass AcousticBass wBassFun NullState, 
 >         JazzPart Bass ElectricGrandPiano chordFun NullState] 
 

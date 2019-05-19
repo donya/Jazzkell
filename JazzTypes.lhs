@@ -1,3 +1,6 @@
+A Functional Model for Jazz Improvisation: Implementation
+Donya Quick
+
 > module JazzTypes where
 > import Euterpea
 > import Data.List (sort)
@@ -47,7 +50,7 @@ the lead sheet as a composition rather than as simply a chord progression.
 >     category  :: SegCat, -- intro, bridge etc.
 >     styles    :: [(PartType, SegStyle a)], -- improv style (free, fixed sections, etc.)
 >     segOnset  :: Onset, -- when does the segment start?
->     segDur    :: Dur, -- when does the segment end?
+>     segDur    :: Beat, -- when does the segment end?
 >     timeSig   :: TimeSig} -- what's the time signature in this segment?
 >     deriving (Eq, Show)
 
