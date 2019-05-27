@@ -91,17 +91,17 @@ Putting it all together:
 Finally, we'll test it on a lead sheet.
      
 > cM7 = ChordCtxt "CM7" [0,2,4,5,7,9,11] -- C major
-> dmM7 = ChordCtxt "DmM7" [2,4,5,7,9,11,0] -- D dorian
+> dm7 = ChordCtxt "DmM7" [2,4,5,7,9,10,0] -- D minor
 > g7 = ChordCtxt "G7" [7,9,11,0,2,4,5] -- G mixolydian
      
-> seg1  = Segment dmM7 Regular [] (0,0)   4   (TimeSig 4 4)
+> seg1  = Segment dm7  Regular [] (0,0)   4   (TimeSig 4 4)
 > seg2  = Segment g7   Regular [] (1,0)   4   (TimeSig 4 4)
 > seg3  = Segment cM7  Regular [] (2,0)   4   (TimeSig 4 4)
 > seg4  = Segment cM7  Regular [] (3,0)   4   (TimeSig 4 4)
-> seg5  = Segment dmM7 Regular [] (4,0)   2   (TimeSig 4 4)
-> seg6  = Segment g7   Ending  [] (4,2)   2   (TimeSig 4 4)
-> seg7  = Segment dmM7 Regular [] (5,0)   2   (TimeSig 4 4)
-> seg8  = Segment g7   Ending  [] (5,2)   2   (TimeSig 4 4)
+> seg5  = Segment dm7  Regular [] (4,0)   2   (TimeSig 4 4)
+> seg6  = Segment g7   Regular  [] (4,2)   2   (TimeSig 4 4)
+> seg7  = Segment dm7  Regular [] (5,0)   2   (TimeSig 4 4)
+> seg8  = Segment g7   Regular  [] (5,2)   2   (TimeSig 4 4)
 > seg9  = Segment cM7  Regular [] (6,0)   4   (TimeSig 4 4)
 > seg10 = Segment g7   Regular [] (7,0)   4   (TimeSig 4 4)
 > seg11 = Segment cM7  End     [] (8,0)   4   (TimeSig 4 4)
